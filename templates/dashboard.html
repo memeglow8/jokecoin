@@ -8,9 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #FFA500 0%, #1E90FF 100%);
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
             min-height: 100vh;
             margin: 0;
             padding: 0;
@@ -95,7 +95,7 @@
             color: white;
         }
         .claim-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(45deg, #FFA500, #32CD32);
             border: none;
             padding: 0.8rem 2.5rem;
             border-radius: 25px;
@@ -189,7 +189,7 @@
             <div class="token-icon">
                 <img src="{{ config['TOKEN_ICON_URL'] }}" alt="{{ config['TOKEN_NAME'] }} Icon" class="img-fluid">
             </div>
-            <h2 class="mb-4">Congratulations, {{ username }}! 🎉</h2>
+            <h2 class="mb-4" style="font-family: 'Comic Sans MS', cursive;">Hey there, funny money master {{ username }}! 🎭</h2>
             <p class="lead">You've qualified to claim</p>
             <div class="prize-amount mb-3">${{ prize_amount }}</div>
             

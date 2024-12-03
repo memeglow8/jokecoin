@@ -8,9 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #FFA500 0%, #1E90FF 100%);
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
             min-height: 100vh;
             margin: 0;
             padding: 0;
@@ -39,8 +39,8 @@
             object-fit: cover;
         }
         .claim-btn {
-            background: #ff6b6b;
-            border: none;
+            background: #32CD32;
+            border: 2px solid #FFA500;
             padding: 0.8rem 2.5rem;
             border-radius: 25px;
             font-weight: 600;
@@ -229,8 +229,8 @@
             <div class="token-icon">
                 <img src="{{ config['TOKEN_ICON_URL'] }}" alt="{{ config['TOKEN_NAME'] }} Icon" class="img-fluid">
             </div>
-            <h1 class="mb-4">{{ config['TOKEN_NAME'] }}</h1>
-            <p class="lead mb-4"> when world thinks u are GOAT and  autistic but u are actually just a chill guy</p>
+            <h1 class="mb-4" style="font-family: 'Comic Sans MS', cursive;">{{ config['TOKEN_NAME'] }}</h1>
+            <p class="lead mb-4">Where Every Trade is a Punchline! 🎭</p>
         
 
             <a href="{{ config['BUY_URL'] }}" class="btn claim-btn text-white">
@@ -278,8 +278,9 @@
         <div class="token-container text-center">
             <h4 class="mt-4 mb-4">About {{ config['TOKEN_NAME'] }}</h4>
             <p class="about-text">
-                {{ config['TOKEN_NAME'] }} is a community-driven meme token built on Solana. 
-                Join our growing community and be part of the next big meme sensation!
+                {{ config['TOKEN_NAME'] }} is where comedy meets crypto! We're not just another meme token - 
+                we're building a community that laughs all the way to the blockchain. Join us for the most 
+                entertaining ride in crypto! 😄
             </p>
             
             <div class="features-container mt-4">
