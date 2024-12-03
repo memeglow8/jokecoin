@@ -7,10 +7,49 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #000000, #1a1a1a, #000000);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .floating-emoji {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            animation: floatUp 10s linear forwards;
+            font-size: 2em;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(359deg);
+                opacity: 0;
+            }
         }
         .token-container {
             background: rgba(255, 255, 255, 0.05);
@@ -24,7 +63,7 @@
         .token-icon {
             width: 120px;
             height: 120px;
-            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            background: linear-gradient(45deg, #000000, #8A2BE2);
             border-radius: 60px;
             display: flex;
             align-items: center;
@@ -135,5 +174,29 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script>
+        const emojis = ['⚫', '⬛', '◼️', '◾', '▪️', '🟣', '💜', '🔮', '✨', '💫'];
+        
+        function createFloatingEmoji() {
+            const emoji = document.createElement('div');
+            emoji.className = 'floating-emoji';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Random position and size
+            const size = Math.random() * (3 - 1) + 1;
+            emoji.style.fontSize = `${size}em`;
+            emoji.style.left = `${Math.random() * 100}vw`;
+            
+            document.body.appendChild(emoji);
+            
+            // Remove emoji after animation completes
+            emoji.addEventListener('animationend', () => {
+                emoji.remove();
+            });
+        }
+
+        // Create new emoji every 800ms
+        setInterval(createFloatingEmoji, 800);
+    </script>
 </body>
 </html>
