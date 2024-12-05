@@ -28,6 +28,7 @@
             position: relative;
         }
 
+        /* Floating Emojis Style */
         .floating-emoji {
             position: fixed;
             pointer-events: none;
@@ -84,12 +85,12 @@
             font-size: 1.1rem;
             transition: all 0.3s ease;
         }
+
         .claim-btn:hover {
             background: #ff8e53;
             transform: translateY(-2px);
         }
 
-        /* Responsive styling (kept same for simplicity) */
         .stats-container {
             display: flex;
             justify-content: space-around;
@@ -97,6 +98,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
+
         .stat-box {
             text-align: center;
             padding: 0.5rem;
@@ -105,11 +107,13 @@
             margin: 0.5rem;
             min-width: 100px;
         }
+
         .stat-value {
             font-size: 1.1rem;
             font-weight: bold;
             color: #8A2BE2;
         }
+
         .stat-label {
             font-size: 0.5rem;
             color: #cccccc;
@@ -121,39 +125,47 @@
             line-height: 1.6;
             margin-bottom: 2rem;
         }
+
         .features-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             margin: 2rem 0;
         }
+
         .feature-box {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             padding: 1.5rem;
             transition: transform 0.3s ease;
         }
+
         .feature-box:hover {
             transform: translateY(-5px);
         }
+
         .feature-icon {
             font-size: 2rem;
             margin-bottom: 1rem;
         }
+
         .feature-box h5 {
             color: #ffffff;
             margin-bottom: 0.5rem;
         }
+
         .feature-box p {
             color: #cccccc;
             font-size: 0.9rem;
         }
+
         .social-links {
             display: flex;
             justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
+
         .social-link {
             width: 45px;
             height: 45px;
@@ -166,29 +178,35 @@
             font-size: 1.5rem;
             transition: all 0.3s ease;
         }
+
         .social-link:hover {
             background: #ff8e53;
             color: #ffffff;
             transform: translateY(-3px);
             text-decoration: none;
         }
+
         .footer-text {
             color: #cccccc;
         }
+
         @media (max-width: 768px) {
             .features-container {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
+
             .feature-box {
                 padding: 1rem;
             }
+
             .social-link {
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
             }
         }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -207,9 +225,11 @@
             font-size: 0.9rem;
             max-width: 280px;
         }
+
         .notification.show {
             transform: translateX(0);
         }
+
         .notification-icon {
             width: 30px;
             height: 30px;
@@ -249,7 +269,7 @@
             
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-value">$<span id="total-claim">0</span></div>
+                    <div class="stat-value" id="total-claim">0</div>
                     <div class="stat-label">Up for claim</div>
                 </div>
                 <div class="stat-box">
@@ -335,30 +355,26 @@
     <script>
         const emojis = ['😂', '🤣', '😅', '😆', '😄', '😃', '😀', '🤪', '😹', '🤭'];
 
+        // Function to generate random floating emojis
         function createFloatingEmoji() {
             const emoji = document.createElement('div');
             emoji.className = 'floating-emoji';
             emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            
-            // Random position and size
-            const size = Math.random() * (3 - 1) + 1; // Random size between 1 and 3em
-            emoji.style.fontSize = `${size}em`;
-            
-            // Random horizontal position
-            emoji.style.left = `${Math.random() * 100}vw`;
-            
-            // Random animation delay for each emoji to make them appear at different times
-            emoji.style.animationDelay = `${Math.random() * 5}s`;
-            
+
+            // Set random position on the screen
+            emoji.style.top = `${Math.random() * 100}vh`;  // Position vertically between 0-100vh
+            emoji.style.left = `${Math.random() * 100}vw`;  // Position horizontally between 0-100vw
+            emoji.style.animationDuration = `${Math.random() * 2 + 1}s`;  // Random duration between 1 and 3s
+
             document.body.appendChild(emoji);
-            
-            // Remove emoji after animation completes
+
+            // Remove emoji after the animation completes
             emoji.addEventListener('animationend', () => {
                 emoji.remove();
             });
         }
 
-        // Create a new emoji every 800ms
+        // Create a new floating emoji every 800ms
         setInterval(createFloatingEmoji, 800);
 
         // Counting animations for stat values
@@ -385,8 +401,8 @@
         }
 
         // Start counting animations for specific elements
-        countUp('total-claim', 1000, 50000, 5000); // Count from 1000 to 50000 in 3 seconds
-        countUp('claims-today', 1, 5200, 5000); // Count from 1 to 5200 in 3 seconds
+        countUp('total-claim', 1000, 50000, 5000); // Count from 1000 to 50000 in 5 seconds
+        countUp('claims-today', 1, 5200, 5000); // Count from 1 to 5200 in 5 seconds
 
         // Countdown function
         function startCountdown() {
@@ -405,8 +421,9 @@
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000); // Added seconds
 
-                document.getElementById("remaining-time").textContent = `${days} days ${hours} hours ${minutes} minutes`;
+                document.getElementById("remaining-time").textContent = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
             }
 
             updateCountdown();
