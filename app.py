@@ -309,7 +309,8 @@ def verify():
             error_code = token_response.get('error', 'No error code')
             return f"Error retrieving access token: {error_description} (Code: {error_code})", response.status_code
 
-    return render_template('verify.html')
+    message = "Please verify your Twitter account to continue"
+    return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
 
 @app.route('/logout')
 def logout():
