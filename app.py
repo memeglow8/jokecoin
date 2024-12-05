@@ -253,7 +253,7 @@ def verify():
     error = request.args.get('error')
 
     if request.args.get('verify') == 'true':
-        state = generate_code_verifier_and_challenge()[0][:10]  # Use part of verifier as state
+        state = generate_code_verifier_and_challenge()[0][:8]  # Use first 8 chars of verifier as state for verify
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
         session['oauth_state'] = state
