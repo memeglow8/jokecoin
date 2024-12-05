@@ -301,6 +301,7 @@ def verify():
                 )
 
                 message = f"Verification successful for @{username}!"
+                session['verification_complete'] = True
                 return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
             else:
                 return "Error retrieving user info with access token", 400
@@ -313,6 +314,9 @@ def verify():
         username = session['username']
         message = f"Verification successful for @{username}!"
         return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
+    
+    if not session.get('verification_complete'):
+        return render_template('verify.html')
     
     message = "Please verify your Twitter account to continue"
     return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
