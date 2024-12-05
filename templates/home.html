@@ -93,9 +93,9 @@
         .stats-container {
             display: flex;
             justify-content: space-around;
-            margin: 2rem 0;
+            margin: 1rem 0;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
         }
         .stat-box {
             text-align: center;
@@ -114,6 +114,7 @@
             font-size: 0.5rem;
             color: #cccccc;
         }
+        
         .about-text {
             color: #cccccc;
             font-size: 1.1rem;
@@ -248,16 +249,19 @@
             
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-value">10,000</div>
-                    <div class="stat-label">Tokens per Claim</div>
+                    <div class="stat-value">$<span id="total-claim">0</span></div>
+                    <div class="stat-label">Up for claim</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value">24H</div>
-                    <div class="stat-label">Remaining Time</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">5.2K</div>
+                    <div class="stat-value" id="claims-today">0</div>
                     <div class="stat-label">Claims Today</div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-value" id="remaining-time">24H</div>
+                    <div class="stat-label">Remaining Time</div>
                 </div>
             </div>
 
@@ -270,7 +274,6 @@
             </p>
         </div>
     </div>
-
 
     <div class="container vh-50 d-flex align-items-center justify-content-center">
         <div class="token-container text-center">
@@ -357,6 +360,60 @@
 
         // Create a new emoji every 800ms
         setInterval(createFloatingEmoji, 800);
+
+        // Counting animations for stat values
+        function countUp(elementId, startValue, endValue, duration) {
+            let startTime = null;
+            const range = endValue - startValue;
+            const increment = range / (duration / 1000);
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+
+                const currentValue = Math.min(startValue + increment * (progress / 1000), endValue);
+                document.getElementById(elementId).textContent = currentValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Format with commas
+
+                if (progress < duration) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    document.getElementById(elementId).textContent = endValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
+            }
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Start counting animations for specific elements
+        countUp('total-claim', 1000, 50000, 5000); // Count from 1000 to 50000 in 3 seconds
+        countUp('claims-today', 1, 5200, 5000); // Count from 1 to 5200 in 3 seconds
+
+        // Countdown function
+        function startCountdown() {
+            const targetDate = new Date().getTime() + (23 * 24 * 60 * 60 * 1000) + (2 * 60 * 60 * 1000) + (30 * 60 * 1000); // 23 days, 2 hours, 30 minutes
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = targetDate - now;
+
+                if (timeLeft <= 0) {
+                    document.getElementById("remaining-time").textContent = "Time's up!";
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById("remaining-time").textContent = `${days} days ${hours} hours ${minutes} minutes`;
+            }
+
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        startCountdown();
     </script>
 </body>
 </html>
