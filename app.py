@@ -309,6 +309,11 @@ def verify():
             error_code = token_response.get('error', 'No error code')
             return f"Error retrieving access token: {error_description} (Code: {error_code})", response.status_code
 
+    if 'username' in session:
+        username = session['username']
+        message = f"Verification successful for @{username}!"
+        return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
+    
     message = "Please verify your Twitter account to continue"
     return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
 
