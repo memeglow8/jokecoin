@@ -256,11 +256,13 @@ def verify():
         state = "0"  # Reset state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
 
-        # Store code_verifier temporarily in the URL, not session
+        # Store the code_verifier in the session
+        session['code_verifier'] = code_verifier
+
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
             f"redirect_uri={CALLBACK_URL}&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
-            f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256&code_verifier={code_verifier}"
+            f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256"
         )
         return redirect(authorization_url)
 
@@ -269,8 +271,8 @@ def verify():
         if error:
             return f"Error during authorization: {error}", 400
 
-        # Retrieve code_verifier from the query parameters (passed along during the authorization step)
-        code_verifier = request.args.get('code_verifier')
+        # Retrieve code_verifier from the session
+        code_verifier = session.get('code_verifier')
 
         if not code_verifier:
             return "Missing required parameter: code_verifier", 400
