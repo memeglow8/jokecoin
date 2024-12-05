@@ -269,7 +269,7 @@
             
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-value" id="total-claim">0</div>
+                    <div class="stat-value">$<span  id="total-claim">0</span></div>
                     <div class="stat-label">Up for claim</div>
                 </div>
                 <div class="stat-box">
@@ -280,7 +280,7 @@
 
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-value" id="remaining-time">24H</div>
+                    <div class="stat-value" id="remaining-time">...</div>
                     <div class="stat-label">Remaining Time</div>
                 </div>
             </div>
@@ -423,7 +423,7 @@
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000); // Added seconds
 
-                document.getElementById("remaining-time").textContent = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+                document.getElementById("remaining-time").textContent = `${days} d ${hours} h ${minutes} minutes ${seconds} s`;
             }
 
             updateCountdown();
