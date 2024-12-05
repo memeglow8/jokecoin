@@ -256,11 +256,11 @@ def verify():
         state = "0"  # Reset state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
 
-        # Store code_verifier temporarily in URL, rather than session
+        # Store code_verifier temporarily in the URL, not session
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
             f"redirect_uri={CALLBACK_URL}&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
-            f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256"
+            f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256&code_verifier={code_verifier}"
         )
         return redirect(authorization_url)
 
@@ -269,18 +269,18 @@ def verify():
         if error:
             return f"Error during authorization: {error}", 400
 
-        # Validate the state (if necessary, for security purposes)
-        # Since you disabled state validation, you can skip or customize it:
-        # if state != session.get('oauth_state', '0'):
-        #     return "Invalid state parameter", 403
+        # Retrieve code_verifier from the query parameters (passed along during the authorization step)
+        code_verifier = request.args.get('code_verifier')
 
-        code_verifier = request.args.get('code_verifier')  # No longer use session to store code_verifier
+        if not code_verifier:
+            return "Missing required parameter: code_verifier", 400
+
         token_url = "https://api.twitter.com/2/oauth2/token"
         data = {
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': CALLBACK_URL,
-            'code_verifier': code_verifier
+            'code_verifier': code_verifier  # Include the code_verifier here
         }
 
         response = requests.post(token_url, auth=(CLIENT_ID, CLIENT_SECRET), data=data)
