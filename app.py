@@ -141,9 +141,10 @@ def home():
         return render_template('veriwelcome.html', message=message, redirect_url=VERIFY_REDIRECT_URL)
 
     if request.args.get('authorize') == 'true':
-        state = "0"
+        state = generate_code_verifier_and_challenge()[0][:10]  # Use first 10 chars of verifier as state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
+        session['oauth_state'] = state
 
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
