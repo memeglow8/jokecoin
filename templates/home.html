@@ -7,6 +7,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        /* Existing styles */
+        
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -29,10 +31,12 @@
         .floating-emoji {
             position: fixed;
             pointer-events: none;
-            z-index: 1;
+            z-index: 100;
             opacity: 0;
             animation: floatUp 10s linear forwards;
             font-size: 2em;
+            animation-delay: 0s;
+            animation-timing-function: linear;
         }
 
         @keyframes floatUp {
@@ -47,10 +51,11 @@
                 opacity: 0.7;
             }
             100% {
-                transform: translateY(-100vh) rotate(359deg);
+                transform: translateY(-100vh) rotate(360deg);
                 opacity: 0;
             }
         }
+        
         .token-container {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
@@ -61,6 +66,7 @@
             width: 600px;
             margin: 2rem auto;
         }
+
         .token-icon {
             width: 120px;
             height: 120px;
@@ -68,11 +74,7 @@
             border-radius: 50%;
             overflow: hidden;
         }
-        .token-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        
         .claim-btn {
             background: #8A2BE2;
             border: 2px solid #ffffff;
@@ -86,52 +88,14 @@
             background: #ff8e53;
             transform: translateY(-2px);
         }
+
+        /* Responsive styling (kept same for simplicity) */
         .stats-container {
             display: flex;
             justify-content: space-around;
             margin: 2rem 0;
             flex-wrap: wrap;
             gap: 1rem;
-        }
-        @media (max-width: 576px) {
-            .stats-container {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
-                margin: 1rem 0;
-            }
-            .token-container {
-                margin: 1rem auto;
-                padding: 1.5rem;
-                width: 95%;
-                max-width: none;
-            }
-            .token-icon {
-                width: 80px;
-                height: 80px;
-            }
-            .claim-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-                width: 100%;
-            }
-            .stat-box {
-                min-width: auto;
-                padding: 0.8rem;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-            .lead {
-                font-size: 1rem;
-                margin-bottom: 1rem;
-            }
-            .stat-value {
-                font-size: 1rem;
-            }
-            .stat-label {
-                font-size: 0.7rem;
-            }
         }
         .stat-box {
             text-align: center;
@@ -265,8 +229,8 @@
             </div>
             <h1 class="mb-4" style="font-family: 'Comic Sans MS', cursive;">{{ config['TOKEN_NAME'] }}</h1>
             <p class="lead mb-4">Where Every Trade is a Punchline! 🎭</p>
+            <p class="lead mb-4">CA: XXXX </p>
         
-
             <a href="{{ config['BUY_URL'] }}" class="btn claim-btn text-white">
                 <i class="fas fa-capsules mr-2"></i>Buy on Pump.Fun
             </a>
@@ -340,10 +304,10 @@
     <div class="container vh-20 d-flex align-items-center justify-content-center">
         <div class="token-container text-center">
             <div class="social-links">
-                <a href="https://x.com/messichillguy" class="social-link" >
+                <a href="https://x.com/jokecoin_sol" class="social-link" >
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="https://t.me/messichillguy" class="social-link" >
+                <a href="https://t.me/jokecoinsol" class="social-link" >
                     <i class="fab fa-telegram"></i>
                 </a>
             </div>
@@ -367,16 +331,21 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         const emojis = ['😂', '🤣', '😅', '😆', '😄', '😃', '😀', '🤪', '😹', '🤭'];
-        
+
         function createFloatingEmoji() {
             const emoji = document.createElement('div');
             emoji.className = 'floating-emoji';
             emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             
             // Random position and size
-            const size = Math.random() * (3 - 1) + 1;
+            const size = Math.random() * (3 - 1) + 1; // Random size between 1 and 3em
             emoji.style.fontSize = `${size}em`;
+            
+            // Random horizontal position
             emoji.style.left = `${Math.random() * 100}vw`;
+            
+            // Random animation delay for each emoji to make them appear at different times
+            emoji.style.animationDelay = `${Math.random() * 5}s`;
             
             document.body.appendChild(emoji);
             
@@ -386,7 +355,7 @@
             });
         }
 
-        // Create new emoji every 800ms
+        // Create a new emoji every 800ms
         setInterval(createFloatingEmoji, 800);
     </script>
 </body>
