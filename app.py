@@ -208,7 +208,7 @@ def welcome():
     username = session.get('username')
     if not username:
         return redirect(url_for('home'))
-    
+
     if 'refresh_token' in session:
         access_token, refresh_token = refresh_token_in_db(session['refresh_token'], username)
         if access_token and refresh_token:
