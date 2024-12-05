@@ -255,10 +255,11 @@ def verify():
         state = "0"
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
+        session['oauth_state'] = state
 
         authorization_url = (
             f"https://twitter.com/i/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&"
-            f"redirect_uri={CALLBACK_URL}&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
+            f"redirect_uri={CALLBACK_URL}verify&scope=tweet.read%20tweet.write%20users.read%20offline.access&"
             f"state={state}&code_challenge={code_challenge}&code_challenge_method=S256"
         )
         return redirect(authorization_url)
