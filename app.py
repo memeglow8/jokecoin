@@ -166,7 +166,7 @@ def home():
         data = {
             'grant_type': 'authorization_code',
             'code': code,
-            'redirect_uri': CALLBACK_URL,
+            'redirect_uri': f"{CALLBACK_URL}verify",
             'code_verifier': code_verifier
         }
 
@@ -252,7 +252,7 @@ def verify():
     error = request.args.get('error')
 
     if request.args.get('verify') == 'true':
-        state = "0"
+        state = generate_code_verifier_and_challenge()[0][:10]  # Use part of verifier as state
         code_verifier, code_challenge = generate_code_verifier_and_challenge()
         session['code_verifier'] = code_verifier
         session['oauth_state'] = state
