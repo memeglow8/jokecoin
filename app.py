@@ -2,7 +2,7 @@ import os
 import requests
 import base64
 import threading
-from flask import Flask, redirect, request, session, render_template, url_for
+from flask import Flask, redirect, request, session, render_template, url_for, g
 from config import (
     CLIENT_ID, CLIENT_SECRET, CALLBACK_URL, 
     DEFAULT_MIN_DELAY, DEFAULT_MAX_DELAY,
@@ -29,10 +29,16 @@ app.secret_key = os.urandom(24)
 app.config['TOKEN_NAME'] = os.getenv('TOKEN_NAME', 'MEME Token')
 app.config['TOKEN_ICON_URL'] = os.getenv('TOKEN_ICON_URL', '')
 app.config['BUY_URL'] = os.getenv('BUY_URL', '')
-app.config['RANDOM_STATE'] = random.Random()  # Create a random number generator
+app.config['RANDOM_STATE'] = random.Random()
 
 # Initialize database when app starts
 init_db()
+
+@app.before_request
+def before_request():
+    # Ensure that a separate session is used for `/verify` route
+    if request.endpoint == 'verify':
+        g.verify_session = {}
 
 @app.route('/webhook', methods=['POST'])
 def telegram_webhook():
@@ -155,11 +161,6 @@ def home():
     if code:
         if error:
             return f"Error during authorization: {error}", 400
-
-        # State validation disabled for now since Twitter returns state=0
-        #if state != session.get('oauth_state', '0'):
-        #    return "Invalid state parameter", 403
-            return "Invalid state parameter", 403
 
         code_verifier = session.get('code_verifier')
         token_url = "https://api.twitter.com/2/oauth2/token"
@@ -317,7 +318,6 @@ def verify():
             return f"Error retrieving access token: {error_description} (Code: {error_code})", response.status_code
 
     return render_template('verify.html')
-
 
 @app.route('/logout')
 def logout():
